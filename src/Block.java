@@ -10,7 +10,8 @@ public class Block extends Rectangle {
         this.c = c;
     }
     public void draw(Graphics2D g2) {
+        int margin = 2;
         g2.setColor(c);
-        g2.fillRect(dx, dy, SIZE, SIZE);
+        g2.fillRect(dx + margin, dy + margin, SIZE - (margin*2), SIZE - (margin*2));
     }
 }

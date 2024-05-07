@@ -6,8 +6,8 @@ public class Mino_L2 extends Mino {
     }
 
     public void init(int x, int y) {
-        b[0].dx = x;
-        b[0].dy = y;
+        b[0].dx = x + Block.SIZE;
+        b[0].dy = y + Block.SIZE;
         b[1].dx = b[0].dx;
         b[1].dy = b[0].dy - Block.SIZE;
         b[2].dx = b[0].dx;
