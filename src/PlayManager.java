@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -18,6 +19,11 @@ public class PlayManager {
     final int NEXT_MINO_X;
     final int NEXT_MINO_Y;
     public static ArrayList<Block> blocks = new ArrayList<>();
+
+    final int RESTART_BUTTON_WIDTH = 100;
+    final int RESTART_BUTTON_HEIGHT = 40;
+    final int RESTART_BUTTON_X = right_x + 50;
+    final int RESTART_BUTTON_Y = 120 + 70;
 
     public static int dropInterval = 60;
     public boolean isGameOver;
@@ -92,6 +98,16 @@ public class PlayManager {
                 }
             }
         }
+    }
+
+    public void reset() {
+        blocks.clear();
+        currentMino = pickRandomMino();
+        currentMino.init(MINO_START_X, MINO_START_Y);
+        nextMino = pickRandomMino();
+        nextMino.init(NEXT_MINO_X, NEXT_MINO_Y);
+        score = 0;
+        isGameOver = false;
     }
 
     public void update() {
