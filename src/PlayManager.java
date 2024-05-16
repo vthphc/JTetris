@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,12 +18,6 @@ public class PlayManager {
     final int NEXT_MINO_X;
     final int NEXT_MINO_Y;
     public static ArrayList<Block> blocks = new ArrayList<>();
-
-    final int RESTART_BUTTON_WIDTH = 100;
-    final int RESTART_BUTTON_HEIGHT = 40;
-    final int RESTART_BUTTON_X = right_x + 50;
-    final int RESTART_BUTTON_Y = 120 + 70;
-
     public static int dropInterval = 60;
     public boolean isGameOver;
     private int score = 0;
@@ -44,25 +37,81 @@ public class PlayManager {
         NEXT_MINO_X = right_x + 190;
         NEXT_MINO_Y = top_y + 480;
 
-        currentMino = pickRandomMino();
-        currentMino.init(MINO_START_X, MINO_START_Y);
+        if (GamePanel.setMinos == null) {
+            currentMino = pickRandomMino();
+            currentMino.init(MINO_START_X, MINO_START_Y);
+            nextMino = pickRandomMino();
+            nextMino.init(NEXT_MINO_X, NEXT_MINO_Y);
+        }
+        else {
+            for (int i = 0; i < GamePanel.setMinos.length(); i += 2) {
+                Mino mino = getSetMinos(GamePanel.setMinos.substring(i, i + 2));
+                if (currentMino == null) {
+                    currentMino = mino;
+                    currentMino.init(MINO_START_X, MINO_START_Y);
+                }
+                else {
+                    nextMino = mino;
+                    nextMino.init(NEXT_MINO_X, NEXT_MINO_Y);
+                }
+            }
+        }
+    }
 
-        nextMino = pickRandomMino();
-        nextMino.init(NEXT_MINO_X, NEXT_MINO_Y);
+    private Mino getSetMinos(String setMinos) {
+        Mino mino = null;
+        switch (setMinos) {
+            case "BR":
+                mino = new Mino_BR();
+                break;
+            case "L1":
+                mino = new Mino_L1();
+                break;
+            case "L2":
+                mino = new Mino_L2();
+                break;
+            case "SQ":
+                mino = new Mino_SQ();
+                break;
+            case "T0":
+                mino = new Mino_T0();
+                break;
+            case "Z1":
+                mino = new Mino_Z1();
+                break;
+            case "Z2":
+                mino = new Mino_Z2();
+                break;
+        }
+        return mino;
     }
 
     private Mino pickRandomMino() {
         Mino mino = null;
-        int random = new Random().nextInt(7);
-        switch (random) {
-            case 0: mino = new Mino_BR(); break;
-            case 1: mino = new Mino_L1(); break;
-            case 2: mino = new Mino_L2(); break;
-            case 3: mino = new Mino_SQ(); break;
-            case 4: mino = new Mino_T0(); break;
-            case 5: mino = new Mino_Z1(); break;
-            case 6: mino = new Mino_Z2(); break;
-        }
+            int random = new Random().nextInt(7);
+            switch (random) {
+                case 0:
+                    mino = new Mino_BR();
+                    break;
+                case 1:
+                    mino = new Mino_L1();
+                    break;
+                case 2:
+                    mino = new Mino_L2();
+                    break;
+                case 3:
+                    mino = new Mino_SQ();
+                    break;
+                case 4:
+                    mino = new Mino_T0();
+                    break;
+                case 5:
+                    mino = new Mino_Z1();
+                    break;
+                case 6:
+                    mino = new Mino_Z2();
+                    break;
+            }
         return mino;
     }
     private void checkDelete() {
@@ -79,6 +128,7 @@ public class PlayManager {
                 effectCounterOn = true;
                 effectY.add(y);
 
+                GamePanel.soundEffect.playSound("line");
                 score += 100;
 
                 for (int i = 0; i < blocks.size(); i++) {
@@ -110,27 +160,57 @@ public class PlayManager {
         isGameOver = false;
     }
 
-    public void update() {
-        if(currentMino.isStopped) {
-            for (int i = 0; i < 4; i++) {
-                blocks.add(currentMino.b[i]);
+    public void update(String setMinos) {
+        if (setMinos == null) {
+            if(currentMino.isStopped) {
+                for (int i = 0; i < 4; i++) {
+                    blocks.add(currentMino.b[i]);
+                }
+
+                if(currentMino.b[0].dx == MINO_START_X && currentMino.b[0].dy == MINO_START_Y) {
+                    isGameOver = true;
+                    GamePanel.soundEffect.playSound("gameover");
+                }
+
+                currentMino.deactivating = false;
+
+                currentMino = nextMino;
+                currentMino.init(MINO_START_X, MINO_START_Y);
+                nextMino = pickRandomMino();
+                nextMino.init(NEXT_MINO_X, NEXT_MINO_Y);
+
+                checkDelete();
             }
-
-            if(currentMino.b[0].dx == MINO_START_X && currentMino.b[0].dy == MINO_START_Y) {
-                isGameOver = true;
+            else {
+                currentMino.update();
             }
-
-            currentMino.deactivating = false;
-
-            currentMino = nextMino;
-            currentMino.init(MINO_START_X, MINO_START_Y);
-            nextMino = pickRandomMino();
-            nextMino.init(NEXT_MINO_X, NEXT_MINO_Y);
-
-            checkDelete();
         }
         else {
-            currentMino.update();
+            if(currentMino.isStopped) {
+                for (int i = 0; i < 4; i++) {
+                    blocks.add(currentMino.b[i]);
+                }
+
+                if(currentMino.b[0].dx == MINO_START_X && currentMino.b[0].dy == MINO_START_Y) {
+                    isGameOver = true;
+                    GamePanel.soundEffect.playSound("gameover");
+                }
+
+                currentMino.deactivating = false;
+
+                for (int i = 0; i < setMinos.length(); i += 2) {
+                    Mino mino = getSetMinos(setMinos.substring(i, i + 2));
+                    currentMino = mino;
+                    currentMino.init(MINO_START_X, MINO_START_Y);
+                }
+                nextMino = pickRandomMino();
+                nextMino.init(NEXT_MINO_X, NEXT_MINO_Y);
+
+                checkDelete();
+            }
+            else {
+                currentMino.update();
+            }
         }
     }
 
@@ -193,6 +273,11 @@ public class PlayManager {
         int xGameOver = (GamePanel.WIDTH - gameOverStringWidth) / 2;
         int yGameOver = GamePanel.HEIGHT / 2;
 
+        String restartText = "PRESS R TO RESTART";
+        int restartStringWidth = fontMetrics.stringWidth(restartText);
+        int xRestart = (GamePanel.WIDTH - restartStringWidth) / 2;
+        int yRestart = yGameOver + 50;
+
         String pauseText = "PAUSED";
         int pauseStringWidth = fontMetrics.stringWidth(pauseText);
         int xPause = (GamePanel.WIDTH - pauseStringWidth) / 2;
@@ -200,6 +285,7 @@ public class PlayManager {
 
         if(isGameOver) {
             g2.drawString(gameOverText, xGameOver, yGameOver);
+            g2.drawString(restartText, xRestart, yRestart);
 
         }
         else if(KeyHandler.pausePressed) {

@@ -10,11 +10,15 @@ import java.util.ArrayList;
 public class StartMenu extends JPanel {
     private JLabel titleLabel;
     private JButton playButton;
-    private JButton settingsButton;
-    private JPanel titlePanel;
+    private JButton setMinosButton;
     private ArrayList<JLabel> letterLabels;
     private BufferedImage backgroundImage;
+    private PlayManager playManager;
 
+    private StartMenuListener listener;
+    public void setStartMenuListener(StartMenuListener listener) {
+        this.listener = listener;
+    }
     public StartMenu(int panelWidth, int panelHeight) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -29,8 +33,7 @@ public class StartMenu extends JPanel {
             e.printStackTrace();
         }
 
-        // Create title label
-        titlePanel = new JPanel();
+        JPanel titlePanel = new JPanel();
         titlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titlePanel.setOpaque(false);
         titlePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
@@ -48,7 +51,6 @@ public class StartMenu extends JPanel {
         }
         setPreferredSize(new Dimension(panelWidth, panelHeight));
 
-        // Create play button
         playButton = new JButton("Play");
         playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         playButton.setBackground(Color.GREEN);
@@ -59,7 +61,6 @@ public class StartMenu extends JPanel {
         playButton.setMargin(new Insets(10, 20, 10, 20));
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Notify the main program that the play button is clicked
                 if (listener != null) {
                     listener.playButtonClicked();
                 }
@@ -69,26 +70,31 @@ public class StartMenu extends JPanel {
 
         add(Box.createVerticalStrut(10));
 
-        // Create settings button
-        settingsButton = new JButton("Settings");
-        settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        settingsButton.setBackground(Color.darkGray);
-        settingsButton.setForeground(Color.WHITE);
-        settingsButton.setFont(new Font("Arial", Font.PLAIN, 32).deriveFont(Font.BOLD));
-        settingsButton.setPreferredSize(new Dimension(200, 60));
-        settingsButton.setMaximumSize(settingsButton.getPreferredSize());
-        settingsButton.setMargin(new Insets(10, 20, 10, 20));
-        // Add action listener to the settings button if needed
-        add(settingsButton);
+        setMinosButton = new JButton("Set Minos");
+        setMinosButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        setMinosButton.setBackground(Color.darkGray);
+        setMinosButton.setForeground(Color.WHITE);
+        setMinosButton.setFont(new Font("Arial", Font.PLAIN, 32).deriveFont(Font.BOLD));
+        setMinosButton.setPreferredSize(new Dimension(200, 60));
+        setMinosButton.setMaximumSize(setMinosButton.getPreferredSize());
+        setMinosButton.setMargin(new Insets(10, 20, 10, 20));
+        setMinosButton.addActionListener(e -> {
+            String minosString = JOptionPane.showInputDialog(null, "Enter the minos string:");
+            if (minosString != null && !minosString.isEmpty()) {
+                System.out.println(minosString);
+                GamePanel.setMinos = minosString;
+                System.out.println(GamePanel.setMinos);
+            }
+        });
+
+        add(setMinosButton);
 
         add(Box.createVerticalStrut(60));
 
 
-        // Set preferred size to match the GamePanel
         setPreferredSize(new Dimension(panelWidth, panelHeight));
     }
 
-    // Interface for button click events
     public interface StartMenuListener {
         void playButtonClicked();
     }
@@ -98,12 +104,5 @@ public class StartMenu extends JPanel {
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
-    }
-
-    private StartMenuListener listener;
-
-    // Method to set the listener
-    public void setStartMenuListener(StartMenuListener listener) {
-        this.listener = listener;
     }
 }

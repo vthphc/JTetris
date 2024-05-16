@@ -7,6 +7,9 @@ public class GamePanel extends JPanel implements Runnable {
     final int FPS = 60;
     Thread gameThread;
     PlayManager pm = new PlayManager();
+    public static String setMinos;
+    public static Sound music = new Sound();
+    public static Sound soundEffect = new Sound();
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -45,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void update() {
         if(!KeyHandler.pausePressed && !pm.isGameOver ) {
-            pm.update();
+            pm.update(setMinos);
         }
         else if (pm.isGameOver) {
             if(KeyHandler.restartPressed) {

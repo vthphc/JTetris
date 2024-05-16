@@ -111,6 +111,7 @@ public class Mino {
                     break;
             }
             KeyHandler.upPressed = false;
+            GamePanel.soundEffect.playSound("rotate");
         }
         checkMovementCollision();
         if(KeyHandler.downPressed) {
@@ -140,6 +141,7 @@ public class Mino {
         }
 
         if(bottomCollision) {
+            GamePanel.soundEffect.playSound("touchdown");
             deactivating = true;
         }
         else {
