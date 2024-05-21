@@ -55,7 +55,7 @@ public class StartMenu extends JPanel {
         playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         playButton.setBackground(Color.GREEN);
         playButton.setForeground(Color.WHITE);
-        playButton.setFont(new Font("Arial", Font.PLAIN, 32).deriveFont(Font.BOLD));
+        playButton.setFont(new Font("SansSerif", Font.PLAIN, 32).deriveFont(Font.BOLD));
         playButton.setPreferredSize(new Dimension(200, 60));
         playButton.setMaximumSize(playButton.getPreferredSize());
         playButton.setMargin(new Insets(10, 20, 10, 20));
@@ -74,7 +74,7 @@ public class StartMenu extends JPanel {
         setMinosButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         setMinosButton.setBackground(Color.darkGray);
         setMinosButton.setForeground(Color.WHITE);
-        setMinosButton.setFont(new Font("Arial", Font.PLAIN, 32).deriveFont(Font.BOLD));
+        setMinosButton.setFont(new Font("SansSerif", Font.PLAIN, 32).deriveFont(Font.BOLD));
         setMinosButton.setPreferredSize(new Dimension(200, 60));
         setMinosButton.setMaximumSize(setMinosButton.getPreferredSize());
         setMinosButton.setMargin(new Insets(10, 20, 10, 20));
