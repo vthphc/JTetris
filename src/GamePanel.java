@@ -6,12 +6,13 @@ public class GamePanel extends JPanel implements Runnable {
     public static int HEIGHT = 720;
     final int FPS = 60;
     Thread gameThread;
-    PlayManager pm = new PlayManager();
-    public static String setMinos;
-    public static Sound music = new Sound();
+    PlayManager pm;
     public static Sound soundEffect = new Sound();
+    JFrame parentFrame;
+    private Font customFont;
 
-    public GamePanel() {
+    public GamePanel(JFrame parentFrame) {
+        this.parentFrame = parentFrame;
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(Color.black);
         this.setLayout(null);
@@ -20,11 +21,18 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
     }
 
+    public void setCustomFont(Font font) {
+        this.customFont = font;
+    }
+
+    public void initializePlayManager() {
+        pm = new PlayManager(parentFrame, customFont);
+    }
+
     public void launchGame() {
         gameThread = new Thread(this);
         gameThread.start();
     }
-
 
     @Override
     public void run() {
@@ -47,12 +55,14 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void update() {
-        if(!KeyHandler.pausePressed && !pm.isGameOver ) {
-            pm.update(setMinos);
+        if (pm == null) {
+            initializePlayManager();
         }
-        else if (pm.isGameOver) {
-            if(KeyHandler.restartPressed) {
-                pm = new PlayManager();
+
+        if (!KeyHandler.pausePressed && !pm.isGameOver) {
+            pm.update();
+        } else if (pm.isGameOver) {
+            if (KeyHandler.restartPressed) {
                 pm.reset();
                 KeyHandler.restartPressed = false;
             }
@@ -61,8 +71,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        Graphics2D g2 = (Graphics2D)g;
-        pm.draw(g2);
+        if (pm != null) {
+            Graphics2D g2 = (Graphics2D) g;
+            pm.draw(g2);
+        }
     }
 }
